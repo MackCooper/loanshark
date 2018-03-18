@@ -12,12 +12,11 @@ except LookupError:
     conn = psycopg2.connect(DATABASE_URL, user='postgres', password='Redbrick09')
 
 
-cur = conn.cursor()
-
-cur.execute("CREATE SEQUENCE test_uid_seq INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;")
-cur.execute("CREATE TABLE test (uid integer NOT NULL DEFAULT nextval('test_uid_seq'::regclass), first_name text, last_name text);")
-cur.execute("INSERT INTO test (first_name, last_name) VALUES ('Oliver', 'Tonnesen'), ('Mackenzie', 'Cooper'), ('Matthew', 'Holmes'), ('Victor', 'Sun');")
-cur.close()
+with conn.cursor() as cur:
+    cur.execute("DROP TABLE IF EXISTS test;")
+    cur.execute("CREATE SEQUENCE test_uid_seq INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;")
+    cur.execute("CREATE TABLE test (uid integer NOT NULL DEFAULT nextval('test_uid_seq'::regclass), first_name text, last_name text);")
+    cur.execute("INSERT INTO test (first_name, last_name) VALUES ('Oliver', 'Tonnesen'), ('Mackenzie', 'Cooper'), ('Matthew', 'Holmes'), ('Victor', 'Sun');")
 
 app = Flask(__name__)
 
